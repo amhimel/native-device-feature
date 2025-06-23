@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:native_device_features/model/place.dart';
 import 'package:native_device_features/providers/user_places.dart';
 import 'package:native_device_features/widgets/image_input.dart';
 import 'package:native_device_features/widgets/location_input.dart';
@@ -16,13 +17,18 @@ class AddPlaceScreen extends ConsumerStatefulWidget {
 class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   final _tileController = TextEditingController();
   File? _selectedImage;
+  PlaceLocation? _selectedLocation;
 
   void _savePlace() {
     final enterText = _tileController.text;
-    if (enterText.isEmpty || _selectedImage == null) {
+    if (enterText.isEmpty ||
+        _selectedImage == null ||
+        _selectedLocation == null) {
       return;
     }
-    ref.read(userPlacesProvider.notifier).addPlace(enterText, _selectedImage!);
+    ref
+        .read(userPlacesProvider.notifier)
+        .addPlace(enterText, _selectedImage!, _selectedLocation!);
     //for going back using navigator pop
     Navigator.of(context).pop();
   }
@@ -61,7 +67,11 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               ),
               // for location input
               SizedBox(height: 10),
-              LocationInput(),
+              LocationInput(
+                onSelectLocation: (location) {
+                  _selectedLocation = location;
+                },
+              ),
               // for add place
               SizedBox(height: 16),
               ElevatedButton.icon(
