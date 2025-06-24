@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:native_device_features/screens/map.dart';
 import '../model/place.dart';
 
 class PlacesDetailScreen extends StatelessWidget {
   const PlacesDetailScreen({super.key, required this.place});
 
   final Place place;
+
   //getter method for capture a snapshot of location
   String get locationImage {
-
     final lat = place.location.latitude;
     final long = place.location.longitude;
-    return "https://maps.googleapis.com/maps/api/staticmap?center=$lat,$long&zoom=16&size=600x300&maptype=roadmap&markers=color:re%7Clabel:A%7C$lat,$long&key=AIzaSyDl6T41Fx6pjwH_jJRFTuMDfHloFxSyT_Y";
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$long=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$long&key=AIzaSyDl6T41Fx6pjwH_jJRFTuMDfHloFxSyT_Y';
   }
 
   @override
@@ -31,9 +32,22 @@ class PlacesDetailScreen extends StatelessWidget {
             right: 0,
             child: Column(
               children: [
-                CircleAvatar(
-                  radius: 70,
-                  backgroundImage: NetworkImage(locationImage),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder:
+                            (ctx) => MapScreen(
+                              location: place.location,
+                              isSelecting: false,
+                            ),
+                      ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    radius: 70,
+                    backgroundImage: NetworkImage(locationImage),
+                  ),
                 ),
                 Container(
                   alignment: Alignment.center,
@@ -42,7 +56,7 @@ class PlacesDetailScreen extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [Colors.transparent, Colors.black54],
                       begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter
+                      end: Alignment.bottomCenter,
                     ),
                   ),
                   child: Text(
